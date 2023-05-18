@@ -1,16 +1,26 @@
 const form = document.getElementById('question-form');
-const questionInput = document.getElementById('question-input');
-const answer = document.getElementById('answer');
-const answerImage = document.getElementById('answer-image');
+form.addEventListener('submit', handleSubmit);
 
-form.addEventListener('submit', (event) => {
+function handleSubmit(event) {
   event.preventDefault();
-  const question = questionInput.value;
-  fetch(`https://yesno.wtf/api?${question}`)
-    .then(response => response.json())
-    .then(data => {
-      answer.textContent = data.answer;
-      answerImage.src = data.image;
-    })
-    .catch(error => console.error(error));
-});
+  const questionInput = document.getElementById('question-input');
+  const question = questionInput.value.toLowerCase();
+
+  if (question.includes('hey')) {
+    document.getElementById('answer').textContent = 'Yes';
+    document.getElementById('answer-image').src = './image/yes-penguin.gif'; 
+  } else {
+    fetch('https://yesno.wtf/api')
+      .then(response => response.json())
+      .then(data => {
+        const answer = data.answer;
+        const answerText = answer.charAt(0).toUpperCase() + answer.slice(1);
+        const answerImage = data.image;
+        document.getElementById('answer').textContent = answerText;
+        document.getElementById('answer-image').src = answerImage;
+      })
+      .catch(error => console.error(error));
+  }
+
+  questionInput.value = '';
+}
